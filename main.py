@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 import json
 import requests
-from redis.cluster import RedisCluster as Redis
+
 import redis
 import time
 import traceback
@@ -32,8 +32,9 @@ class RedisStreamConsumer:
         self.consumer_name = consumer_name
         self.postprocess_func = postprocess_func
         startup_nodes = [{"host": "10.128.0.3", "port": 6379}]
-        self.redis_client = Redis(host="10.128.0.3", port=6379, decode_responses=True) # Redis(startup_nodes=startup_nodes, decode_responses=True)
-        redis_host = "10.128.0.3" # startup_nodes[0]["host"]
+        host = "10.4.57.166" # 10.4.57.166
+        self.redis_client = redis.Redis(host=host, port=6379, decode_responses=True) # Redis(startup_nodes=startup_nodes, decode_responses=True)
+        redis_host = "10.4.57.166" # "10.128.0.3" # startup_nodes[0]["host"]
         redis_port = 6379 # startup_nodes[0]["port"]
         self.stop_flag = False
 
