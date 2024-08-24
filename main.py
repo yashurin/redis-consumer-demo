@@ -31,7 +31,7 @@ class RedisStreamConsumer:
         self.group_name = group_name
         self.consumer_name = consumer_name
         self.postprocess_func = postprocess_func
-        startup_nodes = [{"host": "10.128.0.3", "port": "6379"}]
+        startup_nodes = [{"host": "10.128.0.3", "port": 6379}]
         self.redis_client = RedisCluster(startup_nodes=startup_nodes, decode_responses=True)
         redis_host = startup_nodes[0]["host"]
         redis_port = startup_nodes[0]["port"]
