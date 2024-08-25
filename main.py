@@ -58,6 +58,49 @@ class RedisStreamConsumer:
                 raise
 
     def consume(self):
+        logger.info(f"Starting to consume messages from stream '{self.stream_name}'")
+        try:
+            while not self.stop_flag:
+                logger.info(f'Waiting for messages in the loop for {self.stream_name}')
+                try:
+                    stream_name = self.stream_name
+                    last_id = '>'
+                    logger.info("Starting to consume messages")
+                    messages = self.redis_client.xread({stream_name: last_id}, count=10, block=5000)
+                    logger.info(f"Messages: {messages}")
+                    if messages:
+                        for message in messages:
+                            stream_name, message_data = message
+                            for message_id, data in message_data:
+                                try:
+                                    current_time = int(time.time() * 1000)
+                                    timestamp = int(data.get('timestamp', 0))
+                                    expiration_threshold = int(data.get('expiration_threshold', 0))
+
+                                    if current_time - timestamp > expiration_threshold:
+                                        logger.info(f"Message {message_id} expired, skipping.")
+                                        continue
+                                    logger.info(f"Consumed message ID {message_id}: {data}")
+                                    if self.postprocess_func:
+                                        logger.info(f"Applying postprocess function to message ID {message_id}")
+                                        self.postprocess_func(data)
+                                    self.redis_client.xack(self.stream_name, self.group_name, message_id)
+                                    logger.info(f"Acknowledged message ID {message_id}")
+                                except Exception as e:
+                                    logger.error(f"Error processing message {message_id}: {e}")
+                                    traceback.print_exc()
+                    else:
+                        logger.info("No new messges received")
+                except Exception as e:
+                    logger.error(f'Unexpected error in consumer: {e}', exc_info=True)
+
+        except Exception as e:
+            logger.error(f"Error consuming messages: {e}")
+            traceback.print_exc()
+        finally:
+            self.cleanup()
+
+    def consume_old(self):
         """Start consuming messages from the Redis stream."""
         logger.info(f"Starting to consume messages from stream '{self.stream_name}' as '{self.consumer_name}'")
         try:
