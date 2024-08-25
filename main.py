@@ -210,7 +210,7 @@ async def start_consumer(stream_name: str):
         stream_name=stream_name,
         group_name=group_name,
         consumer_name=consumer_name,
-        postprocess_func=send_to_webhook # process_message
+        postprocess_func=example_postprocess #send_to_webhook # process_message
     )
 
     # Save the consumer instance
