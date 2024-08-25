@@ -67,7 +67,7 @@ class RedisStreamConsumer:
                     stream_length = self.redis_client.xlen(self.stream_name)
                     logger.info(stream_length)
                     logger.info('Read all messages to verify they exist')
-                    all_messages = self.redis_client.xrange(stream_name, min='-', max='+', count=10)
+                    all_messages = self.redis_client.xrange(self.stream_name, min='-', max='+', count=10)
                     logger.info(all_messages)
                     logger.info('Going on')
                     stream_name = self.stream_name
