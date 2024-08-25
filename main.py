@@ -127,13 +127,13 @@ class RedisStreamConsumer:
                             stream_name, message_data = message
                             for message_id, data in message_data:
                                 try:
-                                    current_time = int(time.time() * 1000)
-                                    timestamp = int(data.get('timestamp', 0))
-                                    expiration_threshold = int(data.get('expiration_threshold', 0))
-
-                                    if current_time - timestamp > expiration_threshold:
-                                        logger.info(f"Message {message_id} expired, skipping.")
-                                        continue
+                                    # current_time = int(time.time() * 1000)
+                                    # timestamp = int(data.get('timestamp', 0))
+                                    # expiration_threshold = int(data.get('expiration_threshold', 0))
+                                    #
+                                    # if current_time - timestamp > expiration_threshold:
+                                    #     logger.info(f"Message {message_id} expired, skipping.")
+                                    #     continue
                                     logger.info(f"Consumed message ID {message_id}: {data}")
                                     if self.postprocess_func:
                                         logger.info(f"Applying postprocess function to message ID {message_id}")
