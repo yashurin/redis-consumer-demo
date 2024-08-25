@@ -64,8 +64,8 @@ class RedisStreamConsumer:
                 logger.info(f'Waiting for messages in the loop for {self.stream_name}')
                 try:
                     stream_name = self.stream_name
-                    last_id = '0-0' #'>'
-                    logger.info("Starting to consume messages")
+                    last_id = '0-0'  #'>'
+                    logger.info("Starting to consume messages from the last_id")
                     messages = self.redis_client.xread({stream_name: last_id}, count=10, block=5000)
                     logger.info(f"Messages: {messages}")
                     if messages:
