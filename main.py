@@ -62,9 +62,16 @@ class RedisStreamConsumer:
         logger.info(f"Starting to consume messages from stream '{self.stream_name}' as '{self.consumer_name}'")
         try:
             while not self.stop_flag:
-                logger.info('Waiting for messages in the loop')
+                logger.info(f'Waiting for messages in the loop for {self.stream_name}')
                 try:
+                    logger.info(f'Trying to inspect the group for the {self.stream_name}')
+                    groups_info = self.redis_client.xinfo_groups(self.stream_name)
+                    logger.info(groups_info)
+                    logger.info('Trying to inspect pending messages')
+                    pending_messages = self.redis_client.xpending(self.stream_name, self.group_name)
+                    logger.info(pending_messages)
                     messages = self.redis_client.xreadgroup(self.group_name, self.consumer_name, {self.stream_name: '>'}, count=10, block=5000)
+                    logger.info(f"Messages: {messages}")
                     if messages:
                         for message in messages:
                             stream_name, message_data = message
