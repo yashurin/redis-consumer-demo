@@ -63,6 +63,13 @@ class RedisStreamConsumer:
             while not self.stop_flag:
                 logger.info(f'Waiting for messages in the loop for {self.stream_name}')
                 try:
+                    logger.info('Verify stream length')
+                    stream_length = self.redis_client.xlen(self.stream_name)
+                    logger.info(stream_length)
+                    logger.info('Read all messages to verify they exist')
+                    all_messages = self.redis_client.xrange(stream_name, min='-', max='+', count=10)
+                    logger.info(all_messages)
+                    logger.info('Going on')
                     stream_name = self.stream_name
                     last_id = '0-0'  #'>'
                     logger.info("Starting to consume messages from the last_id")
